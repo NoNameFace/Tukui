@@ -18,14 +18,14 @@ local function Shared(self, unit)
 	local health = CreateFrame('StatusBar', nil, self)
 	health:SetPoint("TOPLEFT")
 	health:SetPoint("TOPRIGHT")
-	health:SetHeight(TukuiDB.Scale(27*TukuiDB.raidscale))
+	health:SetHeight(TukuiDB.Scale(26*TukuiDB.raidscale))
 	health:SetStatusBarTexture(normTex)
 	self.Health = health
 	
 	health.bg = health:CreateTexture(nil, 'BORDER')
 	health.bg:SetAllPoints(health)
 	health.bg:SetTexture(normTex)
-	health.bg:SetTexture(0.3, 0.3, 0.3)
+	health.bg:SetTexture(0.4, 0.4, 0.4)
 	health.bg.multiplier = 0.3
 	self.Health.bg = health.bg
 		
@@ -43,8 +43,8 @@ local function Shared(self, unit)
 	if TukuiCF.unitframes.unicolor == true then
 		health.colorDisconnected = false
 		health.colorClass = false
-		health:SetStatusBarColor(.3, .3, .3, 1)
-		health.bg:SetVertexColor(.1, .1, .1, 1)		
+		health:SetStatusBarColor(.2, .2, .2, 1)
+		health.bg:SetVertexColor(.1, .1, .1)		
 	else
 		health.colorDisconnected = true
 		health.colorClass = true
@@ -89,8 +89,8 @@ local function Shared(self, unit)
 	self.Leader = leader
 	
     local LFDRole = health:CreateTexture(nil, "OVERLAY")
-    LFDRole:SetHeight(TukuiDB.Scale(6*TukuiDB.raidscale))
-    LFDRole:SetWidth(TukuiDB.Scale(6*TukuiDB.raidscale))
+    LFDRole:SetHeight(TukuiDB.Scale(10*TukuiDB.raidscale))
+    LFDRole:SetWidth(TukuiDB.Scale(10*TukuiDB.raidscale))
 	LFDRole:SetPoint("TOPRIGHT", TukuiDB.Scale(-2), TukuiDB.Scale(-2))
 	LFDRole:SetTexture("Interface\\AddOns\\Tukui\\media\\textures\\lfdicons.blp")
 	self.LFDRole = LFDRole
@@ -118,11 +118,11 @@ local function Shared(self, unit)
 		self.RaidIcon = RaidIcon
 	end
 	
-	--local ReadyCheck = self.Power:CreateTexture(nil, "OVERLAY")
-	--ReadyCheck:SetHeight(TukuiDB.Scale(12*TukuiDB.raidscale))
-	--ReadyCheck:SetWidth(TukuiDB.Scale(12*TukuiDB.raidscale))
-	--ReadyCheck:SetPoint('CENTER')
-	--self.ReadyCheck = ReadyCheck
+	local ReadyCheck = self.Power:CreateTexture(nil, "OVERLAY")
+	ReadyCheck:SetHeight(TukuiDB.Scale(20*TukuiDB.raidscale))
+	ReadyCheck:SetWidth(TukuiDB.Scale(20*TukuiDB.raidscale))
+	ReadyCheck:SetPoint('CENTER')
+	self.ReadyCheck = ReadyCheck
 	
     local debuffs = CreateFrame('Frame', nil, self)
     debuffs:SetPoint('LEFT', self, 'RIGHT', 4, 0)
@@ -140,12 +140,12 @@ local function Shared(self, unit)
 	self.DebuffHighlightBackdrop = true
 	self.DebuffHighlightFilter = true
 	
-	local picon = self.Health:CreateTexture(nil, 'OVERLAY')
-	picon:SetPoint('CENTER', self.Health)
-	picon:SetSize(16, 16)
-	picon:SetTexture[[Interface\AddOns\Tukui\media\textures\picon]]
-	picon.Override = TukuiDB.Phasing
-	self.PhaseIcon = picon
+	--local picon = self.Health:CreateTexture(nil, 'OVERLAY')
+	--picon:SetPoint('CENTER', self.Health)
+	--picon:SetSize(16, 16)
+	--picon:SetTexture[[Interface\AddOns\Tukui\media\textures\picon]]
+	--picon.Override = TukuiDB.Phasing
+	--self.PhaseIcon = picon
 	
 	if TukuiCF["unitframes"].showrange == true then
 		local range = {insideAlpha = 1, outsideAlpha = TukuiCF["unitframes"].raidalphaoor}
@@ -191,7 +191,6 @@ oUF:Factory(function(self)
 		local header = self:GetParent()
 		self:SetWidth(header:GetAttribute('initial-width'))
 		self:SetHeight(header:GetAttribute('initial-height'))
-		RegisterUnitWatch(self)
 	]],
 	'initial-width', TukuiDB.Scale(150*TukuiDB.raidscale),
 	'initial-height', TukuiDB.Scale(32*TukuiDB.raidscale),	
@@ -235,11 +234,3 @@ oUF:Factory(function(self)
 		end
 	end)
 end)
-
-
-
-
-
-
-
-

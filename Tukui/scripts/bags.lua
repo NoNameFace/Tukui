@@ -5,6 +5,8 @@
 	
 	All credits of this bags script is by Stuffing and his author Hungtar.
 	Special Thank's to Hungtar to allow me to use his bag mod for Tukui.
+	
+	Special thanks to bjorngylling for their bank columns code!
 --]]
 
 if not TukuiCF["bags"].enable == true then return end
@@ -387,11 +389,13 @@ function Stuffing:CreateBagFrame(w)
 	f:SetToplevel(1)
 	f:SetFrameStrata("HIGH")
 	f:SetFrameLevel(20)
-
+	
+	f:SetScript("OnMouseDown", f.StartMoving)
+    f:SetScript("OnMouseUp", f.StopMovingOrSizing)
 	if w == "Bank" then
-		f:SetPoint("BOTTOMLEFT", TukuiInfoLeft, "TOPLEFT", 0, TukuiDB.Scale(5))
+		f:SetPoint("BOTTOMLEFT", TukuiInfoLeft, "TOPLEFT", 0, TukuiDB.Scale(3))
 	else
-		f:SetPoint("BOTTOMRIGHT", TukuiInfoRight, "TOPRIGHT", 0, TukuiDB.Scale(5))
+		f:SetPoint("BOTTOMRIGHT", TukuiInfoRight, "TOPRIGHT", 0, TukuiDB.Scale(3))
 	end
 	
 	-- close button
@@ -456,6 +460,7 @@ function Stuffing:InitBags()
 	local f = self:CreateBagFrame("Bags")
 	f:SetScript("OnShow", Stuffing_OnShow)
 	f:SetScript("OnHide", Stuffing_OnHide)
+	f:RegisterForDrag("LeftButton")
 
 	-- search editbox (tekKonfigAboutPanel.lua)
 	local editbox = CreateFrame("EditBox", nil, f)
@@ -562,8 +567,11 @@ function Stuffing:Layout(lb)
 
 	if lb then
 		bs = bags_BANK
-		if TukuiCF["panels"].tinfowidth >= 405 then
-			cols = 11
+--		if TukuiCF["panels"].tinfowidth >= 405 then
+	if TukuiCF["bags"].bank_cols ~= false then
+	 cols = TukuiCF["bags"].bank_cols
+	 elseif TukuiCF["panels"].tinfowidth >= 405 then 
+	cols = 11
 		elseif TukuiCF["panels"].tinfowidth >= 370 and TukuiCF["panels"].tinfowidth < 405 then
 			cols = 10
 		elseif TukuiCF["panels"].tinfowidth >= 335 and TukuiCF["panels"].tinfowidth < 370 then
@@ -574,8 +582,11 @@ function Stuffing:Layout(lb)
 		f = self.bankFrame
 	else
 		bs = bags_BACKPACK
-		if TukuiCF["panels"].tinfowidth >= 405 then
-			cols = 11
+--		if TukuiCF["panels"].tinfowidth >= 405 then
+	if TukuiCF["bags"].bag_cols ~= false then
+	cols = TukuiCF["bags"].bag_cols
+	  elseif TukuiCF["panels"].tinfowidth >= 405 then
+	cols = 11
 		elseif TukuiCF["panels"].tinfowidth >= 370 and TukuiCF["panels"].tinfowidth < 405 then
 			cols = 10
 		elseif TukuiCF["panels"].tinfowidth >= 335 and TukuiCF["panels"].tinfowidth < 370 then
@@ -714,7 +725,11 @@ function Stuffing:Layout(lb)
 				b.frame:SetNormalTexture("")
 				b.frame:Show()
 				TukuiDB.SetTemplate(b.frame)
-				TukuiDB.StyleButton(b.frame)
+				b.frame:SetBackdropColor(0, 0, 0, 0) -- we just need border with SetTemplate, not the backdrop. Hopefully this will fix invisible item that some users have.
+				TukuiDB.StyleButton(b.frame, false)
+				
+				-- color profession bag slot border ~yellow
+				if bagType == ST_SPECIAL then b.frame:SetBackdropBorderColor(255/255, 243/255,  82/255) b.frame.lock = true end
 				
 				self:SlotUpdate(b)
 				
@@ -853,10 +868,11 @@ function Stuffing:ADDON_LOADED(addon)
 	tinsert(UISpecialFrames,"StuffingFrameBags")
 
 	ToggleBackpack = Stuffing_Toggle
+	ToggleBag = Stuffing_ToggleBag
 	OpenAllBags = Stuffing_Toggle
-	OpenBackpack = Stuffing_Toggle
-	CloseBackpack = Stuffing_Close
+	OpenBackpack = Stuffing_Open
 	CloseAllBags = Stuffing_Close
+	CloseBackpack = Stuffing_Close
 
 	BankFrame:UnregisterAllEvents()
 end
@@ -890,10 +906,16 @@ function Stuffing:PLAYER_ENTERING_WORLD()
 			t:SetPoint("TOPLEFT", slot, TukuiDB.Scale(2), TukuiDB.Scale(-2))
 			t:SetPoint("BOTTOMRIGHT", slot, TukuiDB.Scale(-2), TukuiDB.Scale(2))
 			TukuiDB.SetTemplate(slot)
+			slot:SetBackdropColor(0, 0, 0, 0)
 			TukuiDB.StyleButton(slot, false)
 		end
+
 		self:ClearAllPoints()
-		self:SetPoint("BOTTOMRIGHT", TukuiInfoRight, "TOPRIGHT", TukuiDB.Scale(4), TukuiDB.Scale(5))
+		if StuffingFrameBags:IsShown() then
+			self:SetPoint("BOTTOMRIGHT", StuffingFrameBags, "TOPRIGHT", TukuiDB.Scale(4), TukuiDB.Scale(3))
+		else
+			self:SetPoint("LEFT", RightChatTabPanel, "LEFT", TukuiDB.Scale(-190), TukuiDB.Scale(58))
+		end
 	end)
 end
 
@@ -938,6 +960,8 @@ end
 
 
 function Stuffing:BANKFRAME_OPENED()
+	Stuffing_Open()
+	
 	if not self.bankFrame then
 		self:InitBank()
 	end
@@ -947,7 +971,6 @@ function Stuffing:BANKFRAME_OPENED()
 		self:BagSlotUpdate(x)
 	end
 	self.bankFrame:Show()
-	Stuffing_Open()
 end
 
 
@@ -1109,6 +1132,7 @@ end
 
 
 function Stuffing:SortBags()
+  if (UnitAffectingCombat("player")) then return end;
 	local bs = self.sortBags
 	if #bs < 1 then
 		Print (tukuilocal.bags_nothingsort)
@@ -1167,7 +1191,7 @@ function Stuffing:SortBags()
  
 				dbag = bs[st_idx]
  
-				if Stuffing:BagType(dbag) == ST_NORMAL or dbag < 1 then
+				if Stuffing:BagType(dbag) == ST_NORMAL or Stuffing:BagType(dbag) == ST_SPECIAL or dbag < 1 then
 					break
 				end
 			end

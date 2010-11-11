@@ -1,6 +1,4 @@
--- NOTE: i'm not reskinning everything, too much thing to do and anyway, 80% of all frames are redone for Cataclysm
--- I don't want to loose my time reskinning all panels/frame, because in a couple of month we need to redo it. :x
--- thank to karudon for helping me reskinning some elements in default interface.
+-- just some random skin, not everything is skinned atm.
 
 local function SetModifiedBackdrop(self)
 	local color = RAID_CLASS_COLORS[TukuiDB.myclass]
@@ -26,7 +24,7 @@ end
 local TukuiSkin = CreateFrame("Frame")
 TukuiSkin:RegisterEvent("ADDON_LOADED")
 TukuiSkin:SetScript("OnEvent", function(self, event, addon)
-	if IsAddOnLoaded("Skinner") then return end
+	if IsAddOnLoaded("Skinner") or IsAddOnLoaded("Aurora") then return end
 	
 	-- stuff not in Blizzard load-on-demand
 	if addon == "Tukui" then
@@ -169,17 +167,6 @@ TukuiSkin:SetScript("OnEvent", function(self, event, addon)
 		-- others
 		_G["ReadyCheckListenerFrame"]:SetAlpha(0)
 		_G["ReadyCheckFrame"]:HookScript("OnShow", function(self) if UnitIsUnit("player", self.initiator) then self:Hide() end end) -- bug fix, don't show it if initiator
-		_G["GhostFrameContentsFrame"]:SetWidth(TukuiDB.Scale(148))
-		_G["GhostFrameContentsFrame"]:ClearAllPoints()
-		_G["GhostFrameContentsFrame"]:SetPoint("CENTER")
-		_G["GhostFrameContentsFrame"].SetPoint = TukuiDB.dummy
-		_G["GhostFrame"]:SetFrameStrata("HIGH")
-		_G["GhostFrame"]:SetFrameLevel(10)
-		_G["GhostFrame"]:ClearAllPoints()
-		_G["GhostFrame"]:SetPoint("TOP", Minimap, "BOTTOM", 0, TukuiDB.Scale(-25))
-		_G["GhostFrameContentsFrameIcon"]:SetAlpha(0)
-		_G["GhostFrameContentsFrameText"]:ClearAllPoints()
-		_G["GhostFrameContentsFrameText"]:SetPoint("CENTER")
 		_G["PlayerPowerBarAlt"]:HookScript("OnShow", function(self) self:ClearAllPoints() self:SetPoint("TOP", 0, -12) end)
 	end
 	
@@ -203,26 +190,36 @@ TukuiSkin:SetScript("OnEvent", function(self, event, addon)
 		SkinButton(_G["MacOptionsButtonCompress"])
  
 		--Reposition and resize buttons
-		tPoint, tRTo, tRP, tX, tY =  _G["MacOptionsButtonCompress"]:GetPoint()
+		local tPoint, tRTo, tRP, tX, tY =  _G["MacOptionsButtonCompress"]:GetPoint()
 		_G["MacOptionsButtonCompress"]:SetWidth(136)
-		_G["MacOptionsButtonCompress"]:SetPoint(tPoint, tRTo, tRP, tX+4, tY)
+		_G["MacOptionsButtonCompress"]:ClearAllPoints()
+		_G["MacOptionsButtonCompress"]:SetPoint(tPoint, tRTo, tRP, TukuiDB.Scale(4), tY)
  
 		_G["MacOptionsFrameCancel"]:SetWidth(96)
 		_G["MacOptionsFrameCancel"]:SetHeight(22)
 		tPoint, tRTo, tRP, tX, tY =  _G["MacOptionsFrameCancel"]:GetPoint()
-		_G["MacOptionsFrameCancel"]:SetPoint(tPoint, tRTo, tRP, tX-2, tY)
+		_G["MacOptionsFrameCancel"]:ClearAllPoints()
+		_G["MacOptionsFrameCancel"]:SetPoint(tPoint, tRTo, tRP, TukuiDB.Scale(-14), tY)
  
 		_G["MacOptionsFrameOkay"]:ClearAllPoints()
 		_G["MacOptionsFrameOkay"]:SetWidth(96)
 		_G["MacOptionsFrameOkay"]:SetHeight(22)
-		_G["MacOptionsFrameOkay"]:SetPoint("LEFT",_G["MacOptionsFrameCancel"],-99,0)
+		_G["MacOptionsFrameOkay"]:SetPoint("LEFT",_G["MacOptionsFrameCancel"],TukuiDB.Scale(-99),0)
  
 		_G["MacOptionsButtonKeybindings"]:ClearAllPoints()
 		_G["MacOptionsButtonKeybindings"]:SetWidth(96)
 		_G["MacOptionsButtonKeybindings"]:SetHeight(22)
-		_G["MacOptionsButtonKeybindings"]:SetPoint("LEFT",_G["MacOptionsFrameOkay"],-99,0)
+		_G["MacOptionsButtonKeybindings"]:SetPoint("LEFT",_G["MacOptionsFrameOkay"],TukuiDB.Scale(-99),0)
  
 		_G["MacOptionsFrameDefaults"]:SetWidth(96)
 		_G["MacOptionsFrameDefaults"]:SetHeight(22)
+		
+		-- why these buttons is using game menu template? oO
+		_G["MacOptionsButtonCompressLeft"]:SetAlpha(0)
+		_G["MacOptionsButtonCompressMiddle"]:SetAlpha(0)
+		_G["MacOptionsButtonCompressRight"]:SetAlpha(0)
+		_G["MacOptionsButtonKeybindingsLeft"]:SetAlpha(0)
+		_G["MacOptionsButtonKeybindingsMiddle"]:SetAlpha(0)
+		_G["MacOptionsButtonKeybindingsRight"]:SetAlpha(0)
 	end
 end)

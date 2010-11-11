@@ -29,9 +29,19 @@ hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
 		self:SetOwner(parent, "ANCHOR_CURSOR")
 	else
 		self:SetOwner(parent, "ANCHOR_NONE")
-		self:SetPoint("BOTTOMRIGHT", TukuiInfoRight, "TOPRIGHT", 0, TukuiDB.Scale(5))
+		if InCombatLockdown() and db.hidecombat == true then
+			self:Hide()
+		else
+			-- avoids flicker when mouseover unitframes with open bags
+			if TukuiCF["bags"].enable == true and StuffingFrameBags:IsShown() then
+				self:ClearAllPoints()
+				self:SetPoint("TOPRIGHT", UIParent, TukuiDB.Scale(-10), TukuiDB.Scale(-240))
+			else
+				self:ClearAllPoints()
+				self:SetPoint("TOPRIGHT", UIParent, TukuiDB.Scale(-10), TukuiDB.Scale(-240))
+			end
+		end
 	end
-	self.default = 1
 end)
 
 GameTooltip:HookScript("OnUpdate",function(self, ...)
@@ -43,15 +53,15 @@ GameTooltip:HookScript("OnUpdate",function(self, ...)
 		self:SetBackdropBorderColor(unpack(TukuiCF.media.bordercolor))
 	elseif self:GetAnchorType() == "ANCHOR_NONE" then
 		if InCombatLockdown() and db.hidecombat == true then
-			self:SetAlpha(0)
+			self:Hide()
 		else
-			self:SetAlpha(1)
+			-- moves tooltip when opening bags
 			if TukuiCF["bags"].enable == true and StuffingFrameBags:IsShown() then
 				self:ClearAllPoints()
-				self:SetPoint("BOTTOMRIGHT", StuffingFrameBags, "TOPRIGHT", 0, TukuiDB.Scale(4))
+				self:SetPoint("TOPRIGHT", UIParent, TukuiDB.Scale(-10), TukuiDB.Scale(-240))
 			else
 				self:ClearAllPoints()
-				self:SetPoint("BOTTOMRIGHT", TukuiInfoRight, "TOPRIGHT", 0, TukuiDB.Scale(5))
+				self:SetPoint("TOPRIGHT", UIParent, TukuiDB.Scale(-10), TukuiDB.Scale(-240))
 			end
 		end
 	end
@@ -69,7 +79,7 @@ local function GetColor(unit)
 		local r,g,b = color.r, color.g, color.b
 		return Hex(color), r, g, b	
 	else
-		local color = FACTION_BAR_COLORS[UnitReaction("player", unit)]
+		local color = FACTION_BAR_COLORS[UnitReaction(unit, "player")]
 		if not color then return end -- sometime unit too far away return nil for color :(
 		local r,g,b = color.r, color.g, color.b		
 		return Hex(color), r, g, b		
@@ -246,7 +256,7 @@ local BorderColor = function(self)
 	local GMF = GetMouseFocus()
 	local unit = (select(2, self:GetUnit())) or (GMF and GMF:GetAttribute("unit"))
 		
-	local reaction = unit and UnitReaction("player", unit)
+	local reaction = unit and UnitReaction(unit, "player")
 	local player = unit and UnitIsPlayer(unit)
 	local tapped = unit and UnitIsTapped(unit)
 	local tappedbyme = unit and UnitIsTappedByPlayer(unit)

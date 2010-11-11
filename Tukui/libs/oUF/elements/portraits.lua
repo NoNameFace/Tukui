@@ -16,10 +16,12 @@ local Update = function(self, event, unit)
 		elseif(portrait.guid ~= guid or event == 'UNIT_MODEL_CHANGED') then
 			portrait:SetUnit(unit)
 			portrait:SetCamera(0)
+			portrait:SetAlpha(0.3)
 
 			portrait.guid = guid
 		else
 			portrait:SetCamera(0)
+			portrait:SetAlpha(0.3)
 		end
 	else
 		SetPortraitTexture(portrait, unit)

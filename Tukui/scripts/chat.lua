@@ -57,13 +57,35 @@ local function SetChatStyle(frame)
 	-- always set alpha to 1, don't fade it anymore
 	tab:SetAlpha(1)
 	tab.SetAlpha = UIFrameFadeRemoveFrame
+
+	-- color chat tabs, original by Elv, edited by Hydra
+	local classcolortab = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[select(2,UnitClass("player"))]
+	Ctabcolor = TukuiCF.chat.tabcolor
+	if TukuiCF.chat.classcolortab == true then
+		Ctabcolor = {classcolortab.r,classcolortab.g,classcolortab.b,1}
+	end
+	hooksecurefunc("FCFTab_UpdateColors", function(chatTab, isSelected) 
+		chatTab:GetFontString():SetTextColor(unpack(Ctabcolor))
+		if ( chatTab.conversationIcon ) then
+			chatTab.conversationIcon:SetVertexColor(1, 1, 1)
+		end
+		if isSelected then 
+			FCFTab_UpdateColors(chatTab, false) 
+		end
+	end)
+	
+	for i = 1, NUM_CHAT_WINDOWS do
+		if i == 4 then
+			tab:GetFontString():SetTextColor(unpack(Ctabcolor))
+		end
+	end
 	
 	-- hide text when setting chat
-	_G[chat.."TabText"]:Hide()
+   	_G[chat.."TabText"]:Show()
 	
 	-- now show text if mouse is found over tab.
-	tab:HookScript("OnEnter", function() _G[chat.."TabText"]:Show() end)
-	tab:HookScript("OnLeave", function() _G[chat.."TabText"]:Hide() end)
+    --	tab:HookScript("OnEnter", function() _G[chat.."TabText"]:Show() end)
+    --	tab:HookScript("OnLeave", function() _G[chat.."TabText"]:Hide() end)
 	
 	-- yeah baby
 	_G[chat]:SetClampRectInsets(0,0,0,0)
@@ -199,28 +221,28 @@ local function SetupChatPosAndFont(self)
 		else
 			FCF_SetChatWindowFontSize(nil, chat, fontSize)
 		end
-		
-		-- force chat position on #1 and #4, needed if we change ui scale or resolution
-		-- also set original width and height of chatframes 1 and 4 if first time we run tukui.
-		-- doing resize of chat also here for users that hit "cancel" when default installation is show.
-		if i == 1 then
+	
+	-- begin setting chat text neatly inside chat background boxes		
+				if i == 1 then
 			chat:ClearAllPoints()
-			chat:SetPoint("BOTTOMLEFT", TukuiInfoLeft, "TOPLEFT", TukuiDB.Scale(-1), TukuiDB.Scale(6))
+			chat:SetPoint("BOTTOMLEFT", TukuiInfoLeft, "TOPLEFT", TukuiDB.Scale(4), TukuiDB.Scale(7))
+			chat:SetWidth(320)
 			FCF_SavePositionAndDimensions(chat)
-		elseif i == 4 and name == "Loot" then
+		elseif i == 4 then
 			if not chat.isDocked then
 				chat:ClearAllPoints()
-				chat:SetPoint("BOTTOMRIGHT", TukuiInfoRight, "TOPRIGHT", 0, TukuiDB.Scale(6))
-				chat:SetJustifyH("RIGHT") 
+				chat:SetPoint("BOTTOMRIGHT", TukuiInfoRight, "TOPRIGHT", TukuiDB.Scale(-4), TukuiDB.Scale(7))
+				chat:SetJustifyH("LEFT")
+				chat:SetWidth(320)
 				FCF_SavePositionAndDimensions(chat)
 			end
 		end
 	end
-			
+
 	-- reposition battle.net popup over chat #1
 	BNToastFrame:HookScript("OnShow", function(self)
 		self:ClearAllPoints()
-		self:SetPoint("BOTTOMLEFT", ChatFrame1, "TOPLEFT", 0, TukuiDB.Scale(5))
+		self:SetPoint("BOTTOMLEFT", LeftChatTabPanel, "TOPLEFT", 0, TukuiDB.Scale(3))
 	end)
 end
 
@@ -352,8 +374,8 @@ function TukuiDB.ChatCopyButtons()
 		local cf = _G[format("ChatFrame%d",  i)]
 		local button = CreateFrame("Button", format("ButtonCF%d", i), cf)
 		button:SetPoint("TOPRIGHT", 0, 0)
-		button:SetHeight(TukuiDB.Scale(20))
-		button:SetWidth(TukuiDB.Scale(20))
+		button:SetHeight(TukuiDB.Scale(18))
+		button:SetWidth(TukuiDB.Scale(18))
 		button:SetAlpha(0)
 		TukuiDB.SetTemplate(button)
 		

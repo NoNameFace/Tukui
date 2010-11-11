@@ -2,8 +2,8 @@
 ## Author: Tukz
 ## Credits to: Caith, Caellian, Shestak, Haste, Tekkub, Alza, Roth, P3lim, Tulla, Hungtar, hankthetank, Ishtara and others...
 ## Special Thanks to: Admins, Moderator and VIP's from tukui.org
-## Version: 12.09
-## Title: |cffC495DDTukui|r
+## Version: 12.30
+## Title: |cffC495DDTukui|r |cff00AAFFNoNameFace Edit v1.8|r
 ## Notes: UI of awesomeness!
 ## SavedVariables: TukuiData, TukuiArena
 ## SavedVariablesPerCharacter: TukuiInstallv1200, TukuiUFpos

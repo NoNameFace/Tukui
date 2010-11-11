@@ -1,51 +1,127 @@
 -- ACTION BAR PANEL
-TukuiDB.buttonsize = TukuiDB.Scale(27)
+TukuiDB.buttonsize = TukuiDB.Scale(26)
 TukuiDB.buttonspacing = TukuiDB.Scale(4)
-TukuiDB.petbuttonsize = TukuiDB.Scale(29)
+TukuiDB.petbuttonsize = TukuiDB.Scale(25)
 TukuiDB.petbuttonspacing = TukuiDB.Scale(4)
+TukuiDB.stancebuttonsize = TukuiDB.Scale(26)
 
--- set left and right info panel width
-TukuiCF["panels"] = {["tinfowidth"] = 370}
+-- set left and right info panel/chatbox panel width
+TukuiCF["panels"] = {["tinfowidth"] = 326}
 
 local barbg = CreateFrame("Frame", "TukuiActionBarBackground", UIParent)
-TukuiDB.CreatePanel(barbg, 1, 1, "BOTTOM", UIParent, "BOTTOM", 0, TukuiDB.Scale(14))
-if TukuiDB.lowversion == true then
-	barbg:SetWidth((TukuiDB.buttonsize * 12) + (TukuiDB.buttonspacing * 13))
-	if TukuiCF["actionbar"].bottomrows == 2 then
-		barbg:SetHeight((TukuiDB.buttonsize * 2) + (TukuiDB.buttonspacing * 3))
-	else
-		barbg:SetHeight(TukuiDB.buttonsize + (TukuiDB.buttonspacing * 2))
-	end
+barbg:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, TukuiDB.Scale(14))
+barbg:SetWidth((TukuiDB.buttonsize * 12) + (TukuiDB.buttonspacing * 13))
+if TukuiCF["actionbar"].bottomrows == 2 then
+	barbg:SetHeight((TukuiDB.buttonsize * 2) + (TukuiDB.buttonspacing * 3))
 else
-	barbg:SetWidth((TukuiDB.buttonsize * 22) + (TukuiDB.buttonspacing * 23))
-	if TukuiCF["actionbar"].bottomrows == 2 then
-		barbg:SetHeight((TukuiDB.buttonsize * 2) + (TukuiDB.buttonspacing * 3))
-	else
-		barbg:SetHeight(TukuiDB.buttonsize + (TukuiDB.buttonspacing * 2))
-	end
+	barbg:SetHeight(TukuiDB.buttonsize + (TukuiDB.buttonspacing * 2))
 end
 barbg:SetFrameStrata("BACKGROUND")
 barbg:SetFrameLevel(1)
 
 -- INVISIBLE FRAME COVERING TukuiActionBarBackground
 local invbarbg = CreateFrame("Frame", "InvTukuiActionBarBackground", UIParent)
-invbarbg:SetSize(barbg:GetWidth(), barbg:GetHeight())
+if TukuiDB.lowversion == true then
+	invbarbg:SetWidth((TukuiDB.buttonsize * 12) + (TukuiDB.buttonspacing * 13))
+	if TukuiCF["actionbar"].bottomrows == 2 then
+		invbarbg:SetHeight((TukuiDB.buttonsize * 2) + (TukuiDB.buttonspacing * 3))
+	else
+		invbarbg:SetHeight(TukuiDB.buttonsize + (TukuiDB.buttonspacing * 2))
+	end
+else
+	invbarbg:SetWidth((TukuiDB.buttonsize * 22) + (TukuiDB.buttonspacing * 23))
+	if TukuiCF["actionbar"].bottomrows == 2 then
+		invbarbg:SetHeight((TukuiDB.buttonsize * 2) + (TukuiDB.buttonspacing * 3))
+	else
+		invbarbg:SetHeight(TukuiDB.buttonsize + (TukuiDB.buttonspacing * 2))
+	end
+end
 invbarbg:SetPoint("BOTTOM", 0, TukuiDB.Scale(14))
 
--- LEFT VERTICAL LINE
-local ileftlv = CreateFrame("Frame", "TukuiInfoLeftLineVertical", barbg)
-TukuiDB.CreatePanel(ileftlv, 2, 130, "BOTTOMLEFT", UIParent, "BOTTOMLEFT", TukuiDB.Scale(22), TukuiDB.Scale(30))
+-- SPLITBAR PANELS
+if TukuiCF.actionbar.splitbar == true then
+	local sbarbgl = CreateFrame("Frame", "TukuiSplitActionBarBackgroundLeft", UIParent)
+	sbarbgl:SetPoint("BOTTOMRIGHT", barbg, "BOTTOMLEFT", -TukuiDB.Scale(-4), 0)
+	sbarbgl:SetWidth((TukuiDB.buttonsize * 3) + (TukuiDB.buttonspacing * 4))
+	if TukuiCF["actionbar"].bottomrows == 2 then
+		sbarbgl:SetHeight((TukuiDB.buttonsize * 2) + (TukuiDB.buttonspacing * 3))
+	else
+		sbarbgl:SetHeight(TukuiDB.buttonsize + (TukuiDB.buttonspacing * 2))
+	end
+	sbarbgl:SetFrameStrata("BACKGROUND")
+	sbarbgl:SetFrameLevel(2)
+ 
+	local sbarbgr = CreateFrame("Frame", "TukuiSplitActionBarBackgroundRight", UIParent)
+	sbarbgr:SetPoint("BOTTOMLEFT", barbg, "BOTTOMRIGHT", TukuiDB.Scale(-4), 0)
+	sbarbgr:SetWidth((TukuiDB.buttonsize * 3) + (TukuiDB.buttonspacing * 4))
+	if TukuiCF["actionbar"].bottomrows == 2 then
+		sbarbgr:SetHeight((TukuiDB.buttonsize * 2) + (TukuiDB.buttonspacing * 3))
+	else
+		sbarbgr:SetHeight(TukuiDB.buttonsize + (TukuiDB.buttonspacing * 2))
+	end
+	sbarbgr:SetFrameStrata("BACKGROUND")
+	sbarbgr:SetFrameLevel(2)
+end
+--[[
+-- top and bottom window panels
+local tpanel = CreateFrame("Frame", "TukuiTopPanel", UIParent)
+TukuiDB.CreatePanel(tpanel, (GetScreenWidth() * UIParent:GetEffectiveScale()) * 2, 22, "TOP", UIParent, "TOP", 0, 5)
+tpanel:SetFrameLevel(0)
 
--- RIGHT VERTICAL LINE
-local irightlv = CreateFrame("Frame", "TukuiInfoRightLineVertical", barbg)
-TukuiDB.CreatePanel(irightlv, 2, 130, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", TukuiDB.Scale(-22), TukuiDB.Scale(30))
+local bpanel = CreateFrame("Frame", "TukuiBottomPanel", UIParent)
+TukuiDB.CreatePanel(bpanel, (GetScreenWidth() * UIParent:GetEffectiveScale()) * 2, 25, "BOTTOM", UIParent, "BOTTOM", 0, -5)
+bpanel:SetFrameLevel(0)
+]]--
+-- left datatext panel
+local ileft = CreateFrame("Frame", "TukuiInfoLeft", barbg)
+TukuiDB.CreatePanel(ileft, TukuiCF["panels"].tinfowidth, 18, "BOTTOMLEFT", UIParent, TukuiDB.Scale(10), TukuiDB.Scale(10))
+ileft:SetFrameLevel(2)
+ileft:SetFrameStrata("BACKGROUND")
+
+-- left chat background
+local chatleftbg = CreateFrame("Frame", "TukuiChatBackgroundLeft", TukuiInfoLeft)
+TukuiDB.CreateTransparentPanel(chatleftbg, TukuiCF["panels"].tinfowidth, TukuiDB.Scale(118), "BOTTOM", TukuiInfoLeft, "TOP", 0, TukuiDB.Scale(3))
+chatleftbg:SetBackdropColor(0,0,0,0.7)
+
+-- left chat tab panel
+local lctabpan = CreateFrame("Frame", "LeftChatTabPanel", UIParent)
+TukuiDB.CreatePanel(lctabpan, TukuiCF["panels"].tinfowidth, 18, "BOTTOM", chatleftbg, "TOP", -10, TukuiDB.Scale(3))
+lctabpan:SetWidth(TukuiDB.Scale(305))
+
+-- right datatext panel
+local iright = CreateFrame("Frame", "TukuiInfoRight", barbg)
+TukuiDB.CreatePanel(iright, TukuiCF["panels"].tinfowidth, 18, "BOTTOMRIGHT", UIParent, TukuiDB.Scale(-10), TukuiDB.Scale(10))
+iright:SetFrameLevel(2)
+iright:SetFrameStrata("BACKGROUND")
+
+-- right chat background
+local chatrightbg = CreateFrame("Frame", "TukuiChatBackgroundRight", TukuiInfoRight)
+TukuiDB.CreateTransparentPanel(chatrightbg, TukuiCF["panels"].tinfowidth, TukuiDB.Scale(118), "BOTTOM", TukuiInfoRight, "TOP", 0, TukuiDB.Scale(3))
+chatrightbg:SetBackdropColor(0,0,0,0.7)
+
+-- right chat tab panel
+local rctabpan = CreateFrame("Frame", "RightChatTabPanel", UIParent)
+TukuiDB.CreatePanel(rctabpan, TukuiCF["panels"].tinfowidth, 18, "BOTTOM", chatrightbg, "TOP", -10, TukuiDB.Scale(3))
+rctabpan:SetWidth(TukuiDB.Scale(305))
+
+-- minimap datatext panels
+if TukuiMinimap then
+	local minimapstatsleft = CreateFrame("Frame", "TukuiMinimapStatsLeft", TukuiMinimap)
+	TukuiDB.CreatePanel(minimapstatsleft, ((TukuiMinimap:GetWidth() + 4) / 2) -2, 18, "TOPLEFT", TukuiMinimap, "BOTTOMLEFT", 0, TukuiDB.Scale(-3))
+
+	local minimapstatsright = CreateFrame("Frame", "TukuiMinimapStatsRight", TukuiMinimap)
+	TukuiDB.CreatePanel(minimapstatsright, ((TukuiMinimap:GetWidth() + 4) / 2) -2, 18, "TOPRIGHT", TukuiMinimap, "BOTTOMRIGHT", 0, TukuiDB.Scale(-3))
+	
+	local minimapstatstop = CreateFrame("Frame", "TukuiMinimapStatsTop", UIParent)
+    TukuiDB.CreatePanel(minimapstatstop, 148, 18, "TOPRIGHT", Minimap, "TOPRIGHT", 2, 23)
+	end
 
 -- CUBE AT LEFT, ACT AS A BUTTON (CHAT MENU)
 local cubeleft = CreateFrame("Frame", "TukuiCubeLeft", barbg)
-TukuiDB.CreatePanel(cubeleft, 10, 10, "BOTTOM", ileftlv, "TOP", 0, 0)
+TukuiDB.CreatePanel(cubeleft, 18, 18, "LEFT", lctabpan, "RIGHT", TukuiDB.Scale(3), 0)
 cubeleft:EnableMouse(true)
 cubeleft:SetScript("OnMouseDown", function(self, btn)
-	if TukuiInfoLeftBattleGround then
+	if TukuiInfoLeftBattleGround and UnitInBattleground("player") then
 		if btn == "RightButton" then
 			if TukuiInfoLeftBattleGround:IsShown() then
 				TukuiInfoLeftBattleGround:Hide()
@@ -62,7 +138,7 @@ end)
 
 -- CUBE AT RIGHT, ACT AS A BUTTON (CONFIGUI or BG'S)
 local cuberight = CreateFrame("Frame", "TukuiCubeRight", barbg)
-TukuiDB.CreatePanel(cuberight, 10, 10, "BOTTOM", irightlv, "TOP", 0, 0)
+TukuiDB.CreatePanel(cuberight, 18, 18, "LEFT", rctabpan, "RIGHT", TukuiDB.Scale(3), 0)
 if TukuiCF["bags"].enable then
 	cuberight:EnableMouse(true)
 	cuberight:SetScript("OnMouseDown", function(self)
@@ -70,44 +146,11 @@ if TukuiCF["bags"].enable then
 	end)
 end
 
--- HORIZONTAL LINE LEFT
-local ltoabl = CreateFrame("Frame", "TukuiLineToABLeft", barbg)
-TukuiDB.CreatePanel(ltoabl, 5, 2, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)
-ltoabl:ClearAllPoints()
-ltoabl:SetPoint("BOTTOMLEFT", ileftlv, "BOTTOMLEFT", 0, 0)
-ltoabl:SetPoint("RIGHT", barbg, "BOTTOMLEFT", TukuiDB.Scale(-1), TukuiDB.Scale(17))
-
--- HORIZONTAL LINE RIGHT
-local ltoabr = CreateFrame("Frame", "TukuiLineToABRight", barbg)
-TukuiDB.CreatePanel(ltoabr, 5, 2, "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 0)
-ltoabr:ClearAllPoints()
-ltoabr:SetPoint("LEFT", barbg, "BOTTOMRIGHT", TukuiDB.Scale(1), TukuiDB.Scale(17))
-ltoabr:SetPoint("BOTTOMRIGHT", irightlv, "BOTTOMRIGHT", 0, 0)
-
--- INFO LEFT (FOR STATS)
-local ileft = CreateFrame("Frame", "TukuiInfoLeft", barbg)
-TukuiDB.CreatePanel(ileft, TukuiCF["panels"].tinfowidth, 23, "LEFT", ltoabl, "LEFT", TukuiDB.Scale(14), 0)
-ileft:SetFrameLevel(2)
-ileft:SetFrameStrata("BACKGROUND")
-
--- INFO RIGHT (FOR STATS)
-local iright = CreateFrame("Frame", "TukuiInfoRight", barbg)
-TukuiDB.CreatePanel(iright, TukuiCF["panels"].tinfowidth, 23, "RIGHT", ltoabr, "RIGHT", TukuiDB.Scale(-14), 0)
-iright:SetFrameLevel(2)
-iright:SetFrameStrata("BACKGROUND")
-
-if TukuiMinimap then
-	local minimapstatsleft = CreateFrame("Frame", "TukuiMinimapStatsLeft", TukuiMinimap)
-	TukuiDB.CreatePanel(minimapstatsleft, ((TukuiMinimap:GetWidth() + 4) / 2) - 1, 19, "TOPLEFT", TukuiMinimap, "BOTTOMLEFT", 0, TukuiDB.Scale(-2))
-
-	local minimapstatsright = CreateFrame("Frame", "TukuiMinimapStatsRight", TukuiMinimap)
-	TukuiDB.CreatePanel(minimapstatsright, ((TukuiMinimap:GetWidth() + 4) / 2) -1, 19, "TOPRIGHT", TukuiMinimap, "BOTTOMRIGHT", 0, TukuiDB.Scale(-2))
-end
-
 --RIGHT BAR BACKGROUND
 if TukuiCF["actionbar"].enable == true then
 	local barbgr = CreateFrame("Frame", "TukuiActionBarBackgroundRight", UIParent)
-	TukuiDB.CreatePanel(barbgr, 1, (TukuiDB.buttonsize * 12) + (TukuiDB.buttonspacing * 13), "RIGHT", UIParent, "RIGHT", TukuiDB.Scale(-23), TukuiDB.Scale(-13.5))
+	barbgr:SetHeight((TukuiDB.buttonsize * 12) + (TukuiDB.buttonspacing * 13))
+	barbgr:SetPoint("RIGHT", UIParent, "RIGHT", TukuiDB.Scale(-23), TukuiDB.Scale(-13.5))
 	if TukuiCF["actionbar"].rightbars == 1 then
 		barbgr:SetWidth(TukuiDB.buttonsize + (TukuiDB.buttonspacing * 2))
 	elseif TukuiCF["actionbar"].rightbars == 2 then
@@ -117,29 +160,16 @@ if TukuiCF["actionbar"].enable == true then
 	else
 		barbgr:Hide()
 	end
-	if TukuiCF["actionbar"].rightbars > 0 then
-		local rbl = CreateFrame("Frame", "TukuiRightBarLine", barbgr)
-		local crblu = CreateFrame("Frame", "TukuiCubeRightBarUP", barbgr)
-		local crbld = CreateFrame("Frame", "TukuiCubeRightBarDown", barbgr)
-		TukuiDB.CreatePanel(rbl, 2, (TukuiDB.buttonsize / 2 * 27) + (TukuiDB.buttonspacing * 6), "RIGHT", barbgr, "RIGHT", TukuiDB.Scale(1), 0)
-		rbl:SetWidth(TukuiDB.Scale(2))
-		TukuiDB.CreatePanel(crblu, 10, 10, "BOTTOM", rbl, "TOP", 0, 0)
-		TukuiDB.CreatePanel(crbld, 10, 10, "TOP", rbl, "BOTTOM", 0, 0)
-	end
 
 	local petbg = CreateFrame("Frame", "TukuiPetActionBarBackground", UIParent)
+	petbg:SetSize(TukuiDB.petbuttonsize + (TukuiDB.petbuttonspacing * 2), (TukuiDB.petbuttonsize * 10) + (TukuiDB.petbuttonspacing * 11))
 	if TukuiCF["actionbar"].rightbars > 0 then
-		TukuiDB.CreatePanel(petbg, TukuiDB.petbuttonsize + (TukuiDB.petbuttonspacing * 2), (TukuiDB.petbuttonsize * 10) + (TukuiDB.petbuttonspacing * 11), "RIGHT", barbgr, "LEFT", TukuiDB.Scale(-6), 0)
+		petbg:SetPoint("RIGHT", barbgr, "LEFT", TukuiDB.Scale(-6), 0)
 	else
-		TukuiDB.CreatePanel(petbg, TukuiDB.petbuttonsize + (TukuiDB.petbuttonspacing * 2), (TukuiDB.petbuttonsize * 10) + (TukuiDB.petbuttonspacing * 11), "RIGHT", UIParent, "RIGHT", TukuiDB.Scale(-6), TukuiDB.Scale(-13.5))
+		petbg:SetPoint("RIGHT", UIParent, "RIGHT", TukuiDB.Scale(-6), TukuiDB.Scale(-13.5))
 	end
-
-	local ltpetbg1 = CreateFrame("Frame", "TukuiLineToPetActionBarBackground", petbg)
-	TukuiDB.CreatePanel(ltpetbg1, 30, 265, "TOPLEFT", petbg, "TOPRIGHT", 0, TukuiDB.Scale(-33))
-	ltpetbg1:SetFrameLevel(0)
-	ltpetbg1:SetAlpha(.8)
 end
-
+--[[
 --BATTLEGROUND STATS FRAME
 if TukuiCF["datatext"].battleground == true then
 	local bgframe = CreateFrame("Frame", "TukuiInfoLeftBattleGround", UIParent)
@@ -148,7 +178,17 @@ if TukuiCF["datatext"].battleground == true then
 	bgframe:SetFrameStrata("LOW")
 	bgframe:SetFrameLevel(0)
 	bgframe:EnableMouse(true)
-	local function OnEvent(self, event)
+end
+]]--
+--BATTLEGROUND STATS FRAME
+if TukuiCF["datatext"].battleground == true then
+	local bgframe = CreateFrame("Frame", "TukuiInfoLeftBattleGround", UIParent)
+	TukuiDB.CreatePanel(bgframe, 1, 1, "TOPLEFT", UIParent, "BOTTOMLEFT", 0, 0)
+	bgframe:SetAllPoints(ileft)
+	bgframe:SetFrameStrata("LOW")
+	bgframe:SetFrameLevel(0)
+	bgframe:EnableMouse(true)
+		local function OnEvent(self, event)
 		if event == "PLAYER_ENTERING_WORLD" then
 			inInstance, instanceType = IsInInstance()
 			if inInstance and (instanceType == "pvp") then
@@ -158,51 +198,22 @@ if TukuiCF["datatext"].battleground == true then
 			end
 		end
 	end
-	bgframe:SetScript("OnEnter", function(self)
-	local numScores = GetNumBattlefieldScores()
-		for i=1, numScores do
-			name, killingBlows, honorableKills, deaths, honorGained, faction, race, class, classToken, damageDone, healingDone, bgRating, ratingChange = GetBattlefieldScore(i)
-			if ( name ) then
-				if ( name == UnitName("player") ) then
-					GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, TukuiDB.Scale(4));
-					GameTooltip:ClearLines()
-					GameTooltip:SetPoint("BOTTOM", self, "TOP", 0, TukuiDB.Scale(1))
-					GameTooltip:ClearLines()
-					GameTooltip:AddLine(tukuilocal.datatext_ttstatsfor.."[|cffCC0033"..name.."|r]")
-					GameTooltip:AddLine' '
-					GameTooltip:AddDoubleLine(tukuilocal.datatext_ttkillingblows, killingBlows,1,1,1)
-					GameTooltip:AddDoubleLine(tukuilocal.datatext_tthonorkills, honorableKills,1,1,1)
-					GameTooltip:AddDoubleLine(tukuilocal.datatext_ttdeaths, deaths,1,1,1)
-					GameTooltip:AddDoubleLine(tukuilocal.datatext_tthonorgain, format('%d', honorGained),1,1,1)
-					GameTooltip:AddDoubleLine(tukuilocal.datatext_ttdmgdone, damageDone,1,1,1)
-					GameTooltip:AddDoubleLine(tukuilocal.datatext_tthealdone, healingDone,1,1,1)
-					--Add extra statistics to watch based on what BG you are in.
-					if GetRealZoneText() == "Arathi Basin" then --
-						GameTooltip:AddDoubleLine(tukuilocal.datatext_basesassaulted,GetBattlefieldStatData(i, 1),1,1,1)
-						GameTooltip:AddDoubleLine(tukuilocal.datatext_basesdefended,GetBattlefieldStatData(i, 2),1,1,1)
-					elseif GetRealZoneText() == "Warsong Gulch" then --
-						GameTooltip:AddDoubleLine(tukuilocal.datatext_flagscaptured,GetBattlefieldStatData(i, 1),1,1,1)
-						GameTooltip:AddDoubleLine(tukuilocal.datatext_flagsreturned,GetBattlefieldStatData(i, 2),1,1,1)
-					elseif GetRealZoneText() == "Eye of the Storm" then --
-						GameTooltip:AddDoubleLine(tukuilocal.datatext_flagscaptured,GetBattlefieldStatData(i, 1),1,1,1)
-					elseif GetRealZoneText() == "Alterac Valley" then
-						GameTooltip:AddDoubleLine(tukuilocal.datatext_graveyardsassaulted,GetBattlefieldStatData(i, 1),1,1,1)
-						GameTooltip:AddDoubleLine(tukuilocal.datatext_graveyardsdefended,GetBattlefieldStatData(i, 2),1,1,1)
-						GameTooltip:AddDoubleLine(tukuilocal.datatext_towersassaulted,GetBattlefieldStatData(i, 3),1,1,1)
-						GameTooltip:AddDoubleLine(tukuilocal.datatext_towersdefended,GetBattlefieldStatData(i, 4),1,1,1)
-					elseif GetRealZoneText() == "Strand of the Ancients" then
-						GameTooltip:AddDoubleLine(tukuilocal.datatext_demolishersdestroyed,GetBattlefieldStatData(i, 1),1,1,1)
-						GameTooltip:AddDoubleLine(tukuilocal.datatext_gatesdestroyed,GetBattlefieldStatData(i, 2),1,1,1)
-					elseif GetRealZoneText() == "Isle of Conquest" then
-						GameTooltip:AddDoubleLine(tukuilocal.datatext_basesassaulted,GetBattlefieldStatData(i, 1),1,1,1)
-						GameTooltip:AddDoubleLine(tukuilocal.datatext_basesdefended,GetBattlefieldStatData(i, 2),1,1,1)
-					end					
-					GameTooltip:Show()
-				end
-			end
-		end
-	end) 
-	bgframe:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	bgframe:RegisterEvent("PLAYER_ENTERING_WORLD")
 	bgframe:SetScript("OnEvent", OnEvent)
+end
+
+-- Rep/Exp bar
+local tukuirepexp = CreateFrame("Frame", "TukuiRepExp", TukuiInfoRight)
+TukuiDB.CreatePanel(tukuirepexp, TukuiMinimap:GetWidth() + TukuiDB.Scale(4), 12, "TOPLEFT", TukuiMinimapStatsLeft, "BOTTOMLEFT", 0, TukuiDB.Scale(-3))
+if TukuiDB.level == MAX_PLAYER_LEVEL then
+	local function OnEvent(self, event)
+		local name, id, min, max, value = GetWatchedFactionInfo()
+		if(not GetWatchedFactionInfo()) then
+			tukuirepexp:SetAlpha(0) 
+		else
+			tukuirepexp:SetAlpha(1)
+		end
+	end
+	tukuirepexp:RegisterEvent("UPDATE_FACTION")
+	tukuirepexp:SetScript("OnEvent", OnEvent)
 end

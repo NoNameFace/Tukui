@@ -41,10 +41,10 @@ TukuiOnLogon:SetScript("OnEvent", function(self, event)
 end)
 
 -- vehicle button under minimap
-local vehicle = CreateFrame("BUTTON", nil, UIParent, "SecureActionButtonTemplate")
+local vehicle = CreateFrame("BUTTON", "TukuiExitVehicleButton", UIParent, "SecureActionButtonTemplate")
 vehicle:SetWidth(TukuiDB.Scale(26))
 vehicle:SetHeight(TukuiDB.Scale(26))
-vehicle:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", TukuiDB.Scale(2), TukuiDB.Scale(-26))
+vehicle:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", TukuiDB.Scale(0), TukuiDB.Scale(0))
 
 vehicle:RegisterForClicks("AnyUp")
 vehicle:SetScript("OnClick", function() VehicleExit() end)
@@ -67,4 +67,3 @@ vehicle:SetScript("OnEvent", function(self, event, arg1)
 	end
 end)  
 vehicle:SetAlpha(0)
-

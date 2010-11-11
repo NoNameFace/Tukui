@@ -10,10 +10,6 @@ if TukuiCF["actionbar"].rightbars > 3 then
 	TukuiCF["actionbar"].rightbars = 3
 end
 
-if TukuiCF["actionbar"].bottomrows == 2 and TukuiCF["actionbar"].rightbars > 1 and not TukuiDB.lowversion then
-	TukuiCF["actionbar"].rightbars = 1
-end
-
 ------------------------------------------------------------------------
 -- overwrite font for some language
 ------------------------------------------------------------------------
@@ -67,4 +63,18 @@ end
 
 if (IsAddOnLoaded("Gladius")) then
 	TukuiCF["arena"].unitframes = false
+end
+
+------------------------------------------------------------------------
+-- Others
+------------------------------------------------------------------------
+
+-- auto-disable tooltip on unit frame if tooltip on cursor is enabled.
+if TukuiCF.tooltip.cursor and not TukuiCF.tooltip.hideuf then
+	TukuiCF.tooltip.hideuf = true
+end
+
+-- make sure we don't get errors when splitbar is enabled
+if TukuiCF["actionbar"].rightbars == 3 and TukuiCF["actionbar"].splitbar == true then
+    TukuiCF["actionbar"].rightbars = 2
 end

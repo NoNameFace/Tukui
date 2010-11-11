@@ -34,17 +34,30 @@ bar:SetScript("OnEvent", function(self, event, ...)
 			TukuiPetActionBarBackground:SetFrameStrata("BACKGROUND")
 			TukuiPetActionBarBackground:SetFrameLevel(1)
 			button:SetSize(TukuiDB.petbuttonsize, TukuiDB.petbuttonsize)
-			if i == 1 then
-				button:SetPoint("TOPLEFT", TukuiDB.Scale(4),TukuiDB.Scale(-4))
+			if (IsAddOnLoaded("Tukui_Heal_Layout")) then
+				if i == 1 then
+					button:SetPoint("RIGHT", UIParent, "RIGHT", TukuiDB.Scale(-10), TukuiDB.Scale(-252))
+				else
+					button:SetPoint("BOTTOM", _G["PetActionButton"..(i - 1)], "TOP", 0, TukuiDB.Scale(4))					
+				end
+			elseif TukuiCF["actionbar"].horizonpet == true and not (IsAddOnLoaded("Tukui_Heal_Layout")) then
+				if i == 1 then
+					button:SetPoint("BOTTOMLEFT", TukuiActionBarBackground, "TOPLEFT", TukuiDB.Scale(39), TukuiDB.Scale(-8))
+				else
+					button:SetPoint("LEFT", _G["PetActionButton"..(i - 1)], "RIGHT", TukuiDB.Scale(4), 0)
+				end
 			else
-				button:SetPoint("TOP", _G["PetActionButton"..(i - 1)], "BOTTOM", 0, TukuiDB.Scale(-4))
+				if i == 1 then
+					button:SetPoint("RIGHT", UIParent, "RIGHT", TukuiDB.Scale(-10), TukuiDB.Scale(-90))
+				else
+					button:SetPoint("BOTTOM", _G["PetActionButton"..(i - 1)], "TOP", 0, TukuiDB.Scale(4))					
+				end
 			end
 			button:Show()
 			self:SetAttribute("addchild", button)
 		end
 		RegisterStateDriver(self, "visibility", "[pet,novehicleui,nobonusbar:5] show; hide")
 		hooksecurefunc("PetActionBar_Update", TukuiDB.TukuiPetBarUpdate)
-		PetActionButton_OnDragStart = TukuiDB.dummy
 	elseif event == "PET_BAR_UPDATE" or event == "UNIT_PET" and arg1 == "player" 
 	or event == "PLAYER_CONTROL_LOST" or event == "PLAYER_CONTROL_GAINED" or event == "PLAYER_FARSIGHT_FOCUS_CHANGED" or event == "UNIT_FLAGS"
 	or arg1 == "pet" and (event == "UNIT_AURA") then

@@ -7,6 +7,10 @@ local replace = string.gsub
 
 function style(self)
 	local name = self:GetName()
+	
+	--> fixing a taint issue while changing totem flyout button in combat.
+	if name:match("MultiCastActionButton") then return end 
+	
 	local action = self.action
 	local Button = self
 	local Icon = _G[name.."Icon"]
@@ -31,10 +35,13 @@ function style(self)
 	Btname:Hide()
 	Btname.Show = TukuiDB.dummy
  
-	if not _G[name.."Panel"] then
-		self:SetWidth(TukuiDB.buttonsize)
-		self:SetHeight(TukuiDB.buttonsize)
- 
+		if not _G[name.."Panel"] then
+		-- resize all button not matching TukuiDB.buttonsize
+		if self:GetHeight() ~= TukuiDB.buttonsize then
+		self:SetSize(TukuiDB.buttonsize, TukuiDB.buttonsize)
+		end
+
+		-- create the bg/border panel
 		local panel = CreateFrame("Frame", name.."Panel", self)
 		TukuiDB.CreatePanel(panel, TukuiDB.buttonsize, TukuiDB.buttonsize, "CENTER", self, "CENTER", 0, 0)
  
@@ -105,7 +112,7 @@ local function stylesmallbutton(normal, button, icon, name, pet)
 	normal:SetPoint("BOTTOMRIGHT")
 end
 
-local function styleshift()
+function TukuiDB.StyleShift()
 	for i=1, NUM_SHAPESHIFT_SLOTS do
 		local name = "ShapeshiftButton"..i
 		local button  = _G[name]
@@ -283,6 +290,3 @@ end
 hooksecurefunc("ActionButton_Update", style)
 hooksecurefunc("ActionButton_UpdateHotkeys", updatehotkey)
 hooksecurefunc("ActionButton_UpdateFlyout", styleflyout)
-hooksecurefunc("ShapeshiftBar_OnLoad", styleshift)
-hooksecurefunc("ShapeshiftBar_Update", styleshift)
-hooksecurefunc("ShapeshiftBar_UpdateState", styleshift)

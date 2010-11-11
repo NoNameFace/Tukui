@@ -126,6 +126,12 @@ oUF.Tags['Tukui:getnamecolor'] = function(unit)
 	end
 end
 
+oUF.TagEvents['Tukui:nameveryshort'] = 'UNIT_NAME_UPDATE'
+oUF.Tags['Tukui:nameveryshort'] = function(unit)
+	local name = UnitName(unit)
+	return utf8sub(name, 5, false)
+end
+
 oUF.TagEvents['Tukui:nameshort'] = 'UNIT_NAME_UPDATE'
 oUF.Tags['Tukui:nameshort'] = function(unit)
 	local name = UnitName(unit)

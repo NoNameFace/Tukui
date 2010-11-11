@@ -1,5 +1,37 @@
--- localization for enUS and enGB
+local playerName = UnitName("player")
+local realmName = GetRealmName()
+local _, class = UnitClass("player")
+ local playerFaction = UnitFactionGroup("player")
 
+if playerFaction == "Alliance" then
+	factioncolor = "|cff6874FB"
+elseif playerFaction == "Horde" then
+	factioncolor = "|cffc00c08" 
+end
+
+if class == "DEATHKNIGHT" then
+	classcolor = "|cffc41e3c"
+elseif class == "DRUID" then
+	classcolor = "|cffff7d0a"
+elseif class == "HUNTER" then
+	classcolor = "|cffabd674"
+elseif class == "MAGE" then
+	classcolor = "|cff68cdff"
+elseif class == "PALADIN" then
+	classcolor = "|cfff58cba"
+elseif class == "PRIEST" then
+	classcolor = "|cffd4d4d4"
+elseif class == "ROGUE" then
+	classcolor = "|cfffff352"
+elseif class == "SHAMAN" then
+	classcolor = "|cff294f9b"
+elseif class == "WARLOCK" then
+	classcolor = "|cff9482c9"
+elseif class == "WARRIOR" then
+	classcolor = "|cffc79c6e"
+end
+
+-- localization for enUS and enGB
 tukuilocal.chat_BATTLEGROUND_GET = "[BG]"
 tukuilocal.chat_BATTLEGROUND_LEADER_GET = "[BG]"
 tukuilocal.chat_BN_WHISPER_GET = "From"
@@ -18,8 +50,16 @@ tukuilocal.chat_FLAG_GM = "[GM]"
 tukuilocal.chat_ERR_FRIEND_ONLINE_SS = "is now |cff298F00online|r"
 tukuilocal.chat_ERR_FRIEND_OFFLINE_S = "is now |cffff0000offline|r"
 
+tukuilocal.chat_general = "General"
+tukuilocal.chat_trade = "Trade"
+tukuilocal.chat_defense = "LocalDefense"
+tukuilocal.chat_recrutment = "GuildRecruitment"
+tukuilocal.chat_lfg = "LookingForGroup"
+
 tukuilocal.disband = "Disbanding group."
 
+tukuilocal.datatext_download = "Download: "
+tukuilocal.datatext_bandwidth = "Bandwidth: "
 tukuilocal.datatext_guild = "Guild"
 tukuilocal.datatext_noguild = "No Guild"
 tukuilocal.datatext_bags = "Bags: "
@@ -154,8 +194,8 @@ tukuilocal.core_autoinv_enable_c = "Autoinvite ON: "
 tukuilocal.core_autoinv_disable = "Autoinvite OFF"
 tukuilocal.core_wf_unlock = "WatchFrame unlock"
 tukuilocal.core_wf_lock = "WatchFrame lock"
-tukuilocal.core_welcome1 = "Welcome to |cffC495DDTukui|r, version "
-tukuilocal.core_welcome2 = "Type |cff00FFFF/uihelp|r for more info or visit www.tukui.org"
+tukuilocal.core_welcome1 = "Welcome back to "..factioncolor..realmName.."|r, "..classcolor..playerName.."|r! You are using |cffC495DDTukui|r, version "
+tukuilocal.core_welcome2 = "Type |cff00FFFF/uihelp|r for more info or visit us at http://tukui.org"
 
 tukuilocal.core_uihelp1 = "|cff00ff00General Slash Commands|r"
 tukuilocal.core_uihelp2 = "|cffFF0000/tracker|r - Tukui Arena Enemy Cooldown Tracker - Low-memory enemy PVP cooldown tracker. (Icon only)"
@@ -190,6 +230,6 @@ tukuilocal.bind_instruct = "Hover your mouse over any actionbutton to bind it. P
 tukuilocal.bind_save = "Save bindings"
 tukuilocal.bind_discardbind = "Discard bindings"
 
-tukuilocal.hunter_unhappy = "Your pet is unhappy!"
-tukuilocal.hunter_content = "Your pet is content!"
-tukuilocal.hunter_happy = "Your pet is happy!"
+tukuilocal.hunter_unhappy = "Your pet is hungry. Time to feed!"
+tukuilocal.hunter_content = "Your pet is still hungry. Just a little more nomnoms!"
+tukuilocal.hunter_happy = "Your pets tummy is full!"

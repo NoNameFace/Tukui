@@ -60,6 +60,37 @@ function TukuiDB.CreatePanel(f, w, h, a1, p, a2, x, y)
 	f:SetBackdropBorderColor(unpack(TukuiCF["media"].bordercolor))
 end
 
+-- chat backgrounds
+function TukuiDB.CreateTransparentPanel(f, w, h, a1, p, a2, x, y)
+    sh = scale(h)
+    sw = scale(w)
+    f:SetFrameLevel(1)
+    f:SetHeight(sh)
+    f:SetWidth(sw)
+    f:SetFrameStrata("BACKGROUND")
+    f:SetPoint(a1, p, a2, x, y)
+    f:SetBackdrop({
+      bgFile = TukuiCF["media"].blank,
+      edgeFile = TukuiCF["media"].blank,
+      tile = false, tileSize = 0, edgeSize = mult,
+      insets = { left = TukuiDB.Scale(2), right = TukuiDB.Scale(2), top = TukuiDB.Scale(2), bottom = TukuiDB.Scale(2)}
+    })
+    f:SetBackdropColor(.075,.075,.075,.7)
+    f:SetBackdropBorderColor(unpack(TukuiCF["media"].bordercolor))
+ 
+    local border = CreateFrame("Frame", nil, f)
+    border:SetFrameLevel(0)
+    border:SetPoint("TOPLEFT", f, "TOPLEFT", TukuiDB.Scale(-1), TukuiDB.Scale(1))
+    border:SetFrameStrata("BACKGROUND")
+    border:SetBackdrop {
+        edgeFile = TukuiCF["media"].blank, edgeSize = TukuiDB.Scale(3),
+        insets = {left = 0, right = 0, top = 0, bottom = 0}
+    }
+    border:SetBackdropColor(unpack(TukuiCF["media"].backdropcolor))
+    border:SetBackdropBorderColor(unpack(TukuiCF["media"].backdropcolor))
+    border:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", TukuiDB.Scale(1), TukuiDB.Scale(-1))
+end
+
 function TukuiDB.SetTemplate(f)
 	f:SetBackdrop({
 	  bgFile = TukuiCF["media"].blank, 
@@ -72,6 +103,7 @@ function TukuiDB.SetTemplate(f)
 end
 
 function TukuiDB.CreateShadow(f)
+	if f.shadow then return end -- we seriously don't want to create shadow 2 times in a row on the same frame.
 	local shadow = CreateFrame("Frame", nil, f)
 	shadow:SetFrameLevel(1)
 	shadow:SetFrameStrata(f:GetFrameStrata())
@@ -99,10 +131,11 @@ function TukuiDB.PP(p, obj)
 	local right = TukuiInfoRight
 	local mapleft = TukuiMinimapStatsLeft
 	local mapright = TukuiMinimapStatsRight
+	local maptop = TukuiMinimapStatsTop
 	
 	if p == 1 then
 		obj:SetHeight(left:GetHeight())
-		obj:SetPoint("LEFT", left, 30, 0)
+		obj:SetPoint("LEFT", left, 20, 0)
 		obj:SetPoint('TOP', left)
 		obj:SetPoint('BOTTOM', left)
 	elseif p == 2 then
@@ -111,12 +144,12 @@ function TukuiDB.PP(p, obj)
 		obj:SetPoint('BOTTOM', left)
 	elseif p == 3 then
 		obj:SetHeight(left:GetHeight())
-		obj:SetPoint("RIGHT", left, -30, 0)
+		obj:SetPoint("RIGHT", left, -20, 0)
 		obj:SetPoint('TOP', left)
 		obj:SetPoint('BOTTOM', left)
 	elseif p == 4 then
 		obj:SetHeight(right:GetHeight())
-		obj:SetPoint("LEFT", right, 30, 0)
+		obj:SetPoint("LEFT", right, 20, 0)
 		obj:SetPoint('TOP', right)
 		obj:SetPoint('BOTTOM', right)
 	elseif p == 5 then
@@ -125,7 +158,7 @@ function TukuiDB.PP(p, obj)
 		obj:SetPoint('BOTTOM', right)
 	elseif p == 6 then
 		obj:SetHeight(right:GetHeight())
-		obj:SetPoint("RIGHT", right, -30, 0)
+		obj:SetPoint("RIGHT", right, -20, 0)
 		obj:SetPoint('TOP', right)
 		obj:SetPoint('BOTTOM', right)
 	end
@@ -139,6 +172,48 @@ function TukuiDB.PP(p, obj)
 			obj:SetHeight(mapright:GetHeight())
 			obj:SetPoint('TOP', mapright)
 			obj:SetPoint('BOTTOM', mapright)
+		elseif p == 9 then
+			obj:SetHeight(maptop:GetHeight())
+			obj:SetPoint('TOP', maptop)
+			obj:SetPoint('BOTTOM', maptop)
+		end
+	end
+end
+
+function TukuiDB.TukuiShiftBarUpdate()
+	local numForms = GetNumShapeshiftForms()
+	local texture, name, isActive, isCastable
+	local button, icon, cooldown
+	local start, duration, enable
+	for i = 1, NUM_SHAPESHIFT_SLOTS do
+		button = _G["ShapeshiftButton"..i]
+		icon = _G["ShapeshiftButton"..i.."Icon"]
+		if i <= numForms then
+			texture, name, isActive, isCastable = GetShapeshiftFormInfo(i)
+			icon:SetTexture(texture)
+			
+			cooldown = _G["ShapeshiftButton"..i.."Cooldown"]
+			if texture then
+				cooldown:SetAlpha(1)
+			else
+				cooldown:SetAlpha(0)
+			end
+			
+			start, duration, enable = GetShapeshiftFormCooldown(i)
+			CooldownFrame_SetTimer(cooldown, start, duration, enable)
+			
+			if isActive then
+				ShapeshiftBarFrame.lastSelected = button:GetID()
+				button:SetChecked(1)
+			else
+				button:SetChecked(0)
+			end
+
+			if isCastable then
+				icon:SetVertexColor(1.0, 1.0, 1.0)
+			else
+				icon:SetVertexColor(0.4, 0.4, 0.4)
+			end
 		end
 	end
 end
@@ -299,6 +374,7 @@ do
 
 	function TukuiDB.SpawnMenu(self)
 		local unit = self.unit:gsub("(.)", string.upper, 1)
+		if unit == "Targettarget" or unit == "focustarget" or unit == "pettarget" then return end
 		if _G[unit.."FrameDropDown"] then
 			ToggleDropDownMenu(1, nil, _G[unit.."FrameDropDown"], "cursor")
 		elseif (self.unit:match("party")) then
@@ -921,3 +997,42 @@ do
 		self.AuraWatch = auras
 	end
 end
+
+--Check Player's Role
+local RoleUpdater = CreateFrame("Frame")
+local function CheckRole(self, event, unit)
+	local resilience
+	if GetCombatRating(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)*0.02828 > GetDodgeChance() then
+		resilience = true
+	else
+		resilience = false
+	end
+	--print(dodge, resil)
+	if ((TukuiDB.myclass == "PALADIN" and GetPrimaryTalentTree() == 2) or
+	(TukuiDB.myclass == "WARRIOR" and GetPrimaryTalentTree() == 3) or
+	(TukuiDB.myclass == "DEATHKNIGHT" and GetPrimaryTalentTree() == 1)) and
+	resilience == false or
+	--Check for 'Thick Hide' tanking talent
+	(TukuiDB.myclass == "DRUID" and GetPrimaryTalentTree() == 2 and GetBonusBarOffset() == 3) then
+		TukuiDB.Role = "Tank"
+	else
+		local playerint = select(2, UnitStat("player", 4))
+		local playeragi	= select(2, UnitStat("player", 2))
+		local base, posBuff, negBuff = UnitAttackPower("player");
+		local playerap = base + posBuff + negBuff;
+ 
+		if ((playerap > playerint) or (playeragi > playerint)) and not (UnitBuff("player", GetSpellInfo(24858)) or UnitBuff("player", GetSpellInfo(65139))) then
+			TukuiDB.Role = "Melee"
+		else
+			TukuiDB.Role = "Caster"
+		end
+	end
+end
+RoleUpdater:RegisterEvent("PLAYER_ENTERING_WORLD")
+RoleUpdater:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+RoleUpdater:RegisterEvent("PLAYER_TALENT_UPDATE")
+RoleUpdater:RegisterEvent("CHARACTER_POINTS_CHANGED")
+RoleUpdater:RegisterEvent("UNIT_INVENTORY_CHANGED")
+RoleUpdater:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
+RoleUpdater:SetScript("OnEvent", CheckRole)
+CheckRole()

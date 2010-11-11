@@ -5,9 +5,14 @@ if not TukuiCF["actionbar"].enable == true then return end
 ---------------------------------------------------------------------------
 
 do
+	MainMenuBar:SetScale(0.00001)
+	MainMenuBar:SetAlpha(0)
+	VehicleMenuBar:SetScale(0.00001)
+	VehicleMenuBar:SetAlpha(0)
+	
 	local elements = {
 		MainMenuBar, MainMenuBarArtFrame, BonusActionBarFrame, VehicleMenuBar,
-		PossessBarFrame, PetActionBarFrame, 
+		PossessBarFrame, PetActionBarFrame, ShapeshiftBarFrame,
 		ShapeshiftBarLeft, ShapeshiftBarMiddle, ShapeshiftBarRight,
 	}
 	for _, element in pairs(elements) do

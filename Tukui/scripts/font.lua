@@ -31,7 +31,7 @@ TukuiFonts:SetScript("OnEvent", function(self, event, addon)
 	STANDARD_TEXT_FONT = NORMAL
 
 	-- Base fonts
-	SetFont(GameTooltipHeader,                  NORMAL, 12)
+	SetFont(GameTooltipHeader,                  NORMAL, 13)
 	SetFont(NumberFont_OutlineThick_Mono_Small, NUMBER, 12, "OUTLINE")
 	SetFont(NumberFont_Outline_Huge,            NUMBER, 28, "THICKOUTLINE", 28)
 	SetFont(NumberFont_Outline_Large,           NUMBER, 15, "OUTLINE")

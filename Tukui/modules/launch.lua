@@ -3,7 +3,11 @@
 ------------------------------------------------------------------------
 
 local function install()
-	SetCVar("buffDurations", 1)
+	SetCVar("bloatthreat", 0)
+	SetCVar("bloattest", 0)
+	SetCVar("showArenaEnemyFrames", 0)
+
+--[[	SetCVar("buffDurations", 1)
 	SetCVar("consolidateBuffs", 0)
 	SetCVar("lootUnderMouse", 1)
 	SetCVar("autoSelfCast", 1)
@@ -55,7 +59,7 @@ local function install()
 	SetCVar("showVKeyCastbar", 1)
 	SetCVar("colorblindMode", 0)
 	SetCVar("bloatthreat", 0)
-	
+]]--	
 	-- setting this the creator or tukui only, because a lot of people don't like this change.		
 	if TukuiDB.myname == "Tukz" then	
 		SetCVar("secureAbilityToggle", 0)
@@ -67,14 +71,14 @@ local function install()
 		FCF_SetLocked(ChatFrame1, 1)
 		FCF_DockFrame(ChatFrame2)
 		FCF_SetLocked(ChatFrame2, 1)
-		FCF_OpenNewWindow("General")
+		FCF_OpenNewWindow(tukuilocal.chat_general)
 		FCF_SetLocked(ChatFrame3, 1)
 		FCF_DockFrame(ChatFrame3)
 
 		FCF_OpenNewWindow("Loot")
 		FCF_UnDockFrame(ChatFrame4)
 		FCF_SetLocked(ChatFrame4, 1)
-		ChatFrame4:Show();
+		ChatFrame4:Show()
 
 		for i = 1, NUM_CHAT_WINDOWS do
 			local frame = _G[format("ChatFrame%s", i)]
@@ -90,7 +94,7 @@ local function install()
 			if i == 1 then
 				frame:ClearAllPoints()
 				frame:SetPoint("BOTTOMLEFT", TukuiInfoLeft, "TOPLEFT", TukuiDB.Scale(-1), TukuiDB.Scale(6))
-			elseif i == 4 and chatName == "Loot" then
+			elseif i == 4 and chatName == LOOT then
 				frame:ClearAllPoints()
 				frame:SetPoint("BOTTOMRIGHT", TukuiInfoRight, "TOPRIGHT", 0, TukuiDB.Scale(6))
 			end
@@ -102,16 +106,17 @@ local function install()
 			FCF_SetChatWindowFontSize(nil, frame, 12)
 			
 			-- rename windows general and combat log
-			if i == 1 then FCF_SetWindowName(frame, "G, S & W") end
+			if i == 1 then FCF_SetWindowName(frame, "Guild/Raid") end
 			if i == 2 then FCF_SetWindowName(frame, "Log") end
+			if i == 4 then FCF_SetWindowName(frame, "Loot/Trade") end
 		end
 		
 		ChatFrame_RemoveAllMessageGroups(ChatFrame1)
-		ChatFrame_RemoveChannel(ChatFrame1, "Trade")
-		ChatFrame_RemoveChannel(ChatFrame1, "General")
-		ChatFrame_RemoveChannel(ChatFrame1, "LocalDefense")
-		ChatFrame_RemoveChannel(ChatFrame1, "GuildRecruitment")
-		ChatFrame_RemoveChannel(ChatFrame1, "LookingForGroup")
+		ChatFrame_RemoveChannel(ChatFrame1, tukuilocal.chat_trade)
+		ChatFrame_RemoveChannel(ChatFrame1, tukuilocal.chat_general)
+		ChatFrame_RemoveChannel(ChatFrame1, tukuilocal.chat_defense)
+		ChatFrame_RemoveChannel(ChatFrame1, tukuilocal.chat_recrutment)
+		ChatFrame_RemoveChannel(ChatFrame1, tukuilocal.chat_lfg)
 		ChatFrame_AddMessageGroup(ChatFrame1, "SAY")
 		ChatFrame_AddMessageGroup(ChatFrame1, "EMOTE")
 		ChatFrame_AddMessageGroup(ChatFrame1, "YELL")
@@ -143,22 +148,24 @@ local function install()
 		ChatFrame_AddMessageGroup(ChatFrame1, "ACHIEVEMENT")
 		ChatFrame_AddMessageGroup(ChatFrame1, "BN_WHISPER")
 		ChatFrame_AddMessageGroup(ChatFrame1, "BN_CONVERSATION")
+		ChatFrame_AddMessageGroup(ChatFrame1, "TARGETICONS")
 					
 		-- Setup the spam chat frame
 		ChatFrame_RemoveAllMessageGroups(ChatFrame3)
-		ChatFrame_AddChannel(ChatFrame3, "Trade")
-		ChatFrame_AddChannel(ChatFrame3, "General")
-		ChatFrame_AddChannel(ChatFrame3, "LocalDefense")
-		ChatFrame_AddChannel(ChatFrame3, "GuildRecruitment")
-		ChatFrame_AddChannel(ChatFrame3, "LookingForGroup")
+		ChatFrame_AddChannel(ChatFrame3, tukuilocal.chat_trade)
+		ChatFrame_AddChannel(ChatFrame3, tukuilocal.chat_general) 
+		ChatFrame_AddChannel(ChatFrame3, tukuilocal.chat_defense) 
+		ChatFrame_AddChannel(ChatFrame3, tukuilocal.chat_recrutment) 
+		ChatFrame_AddChannel(ChatFrame3, tukuilocal.chat_lfg) 
 				
 		-- Setup the right chat
-		ChatFrame_RemoveAllMessageGroups(ChatFrame4);
+		ChatFrame_RemoveAllMessageGroups(ChatFrame4)
 		ChatFrame_AddMessageGroup(ChatFrame4, "COMBAT_XP_GAIN")
 		ChatFrame_AddMessageGroup(ChatFrame4, "COMBAT_HONOR_GAIN")
 		ChatFrame_AddMessageGroup(ChatFrame4, "COMBAT_FACTION_CHANGE")
 		ChatFrame_AddMessageGroup(ChatFrame4, "LOOT")
 		ChatFrame_AddMessageGroup(ChatFrame4, "MONEY")
+		ChatFrame_AddChannel(ChatFrame4, "Trade")
 				
 		-- enable classcolor automatically on login and on each character without doing /configure each time.
 		ToggleChatColorNamesByClassGroup(true, "SAY")

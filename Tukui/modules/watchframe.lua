@@ -1,5 +1,7 @@
 local TukuiWatchFrame = CreateFrame("Frame", "TukuiWatchFrame", UIParent)
 
+local wideFrame = GetCVar("watchFrameWidth")
+
 local function init()
 	TukuiWatchFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	TukuiWatchFrame:RegisterEvent("CVAR_UPDATE")
@@ -20,13 +22,13 @@ end
 local function setup()
 	TukuiWatchFrame:ClearAllPoints()
 	if TukuiCF.actionbar.rightbars == 3 then
-		TukuiWatchFrame:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", TukuiDB.Scale(-180), TukuiDB.Scale(-68))
+		TukuiWatchFrame:SetPoint("TOPRIGHT", UIParent, TukuiDB.Scale(-10), TukuiDB.Scale(-300))
 	elseif TukuiCF.actionbar.rightbars == 2 then
-		TukuiWatchFrame:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", TukuiDB.Scale(-140), TukuiDB.Scale(-68))
+		TukuiWatchFrame:SetPoint("TOPRIGHT", UIParent, TukuiDB.Scale(-10), TukuiDB.Scale(-300))
 	elseif TukuiCF.actionbar.rightbars == 1 then
-		TukuiWatchFrame:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", TukuiDB.Scale(-100), TukuiDB.Scale(-68))
+		TukuiWatchFrame:SetPoint("TOPRIGHT", UIParent, TukuiDB.Scale(-10), TukuiDB.Scale(-300))
 	else
-		TukuiWatchFrame:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", TukuiDB.Scale(12), TukuiDB.Scale(-68))
+		TukuiWatchFrame:SetPoint("TOPRIGHT", UIParent, TukuiDB.Scale(-10), TukuiDB.Scale(-300))
 	end
 	
 	local screenheight = GetScreenHeight()
@@ -54,7 +56,7 @@ local function setup()
 	WatchFrameTitle:Hide()
 	WatchFrameTitle.Show = TukuiDB.dummy
 	WatchFrameCollapseExpandButton:Hide()
-	WatchFrameCollapseExpandButton.Show = TukuiDB.dummy
+	WatchFrameCollapseExpandButton.Disable = TukuiDB.dummy
 end
 
 TukuiWatchFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
